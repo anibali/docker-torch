@@ -43,6 +43,12 @@ ENV LUA_PATH='/root/.luarocks/share/lua/5.1/?.lua;/root/.luarocks/share/lua/5.1/
 # Install LuaSocket - mainly because socket.gettime() is handy
 RUN luarocks install luasocket
 
+# Install torch-autograd
+RUN git clone https://github.com/twitter/torch-autograd.git /tmp/torch-autograd \
+    && cd /tmp/torch-autograd \
+    && luarocks make \
+    && rm -rf /tmp/torch-autograd
+
 # Set working dir
 VOLUME /root/notebook
 WORKDIR /root/notebook
