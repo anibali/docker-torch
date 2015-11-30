@@ -15,6 +15,8 @@ RUN easy_install3 pip \
     && pip install jupyter
 
 # Install OpenBLAS
+RUN apt-get update \
+    && apt-get install -y gfortran
 RUN git clone https://github.com/xianyi/OpenBLAS.git /tmp/OpenBLAS \
     && cd /tmp/OpenBLAS \
     && make NO_AFFINITY=1 USE_OPENMP=1 \
@@ -42,6 +44,9 @@ ENV LUA_PATH='/root/.luarocks/share/lua/5.1/?.lua;/root/.luarocks/share/lua/5.1/
 
 # Install LuaSocket - mainly because socket.gettime() is handy
 RUN luarocks install luasocket
+
+# Install Moses for utilities
+RUN luarocks install moses
 
 # Install torch-autograd
 RUN git clone https://github.com/twitter/torch-autograd.git /tmp/torch-autograd \
