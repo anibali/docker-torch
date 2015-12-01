@@ -19,7 +19,8 @@ RUN apt-get update \
     && apt-get install -y gfortran
 RUN git clone https://github.com/xianyi/OpenBLAS.git /tmp/OpenBLAS \
     && cd /tmp/OpenBLAS \
-    && make NO_AFFINITY=1 USE_OPENMP=1 \
+    && [ $(getconf _NPROCESSORS_ONLN) = 1 ] && export USE_OPENMP=0 || export USE_OPENMP=1 \
+    && make NO_AFFINITY=1 \
     && make install \
     && rm -rf /tmp/OpenBLAS
 
@@ -27,7 +28,7 @@ RUN git clone https://github.com/xianyi/OpenBLAS.git /tmp/OpenBLAS \
 RUN apt-get update \
     && apt-get install -y cmake curl unzip libreadline-dev libjpeg-dev \
     libpng-dev ncurses-dev imagemagick gnuplot gnuplot-x11 libssl-dev \
-    libzmq3-dev
+    libzmq3-dev graphviz
 RUN git clone https://github.com/torch/distro.git ~/torch --recursive \
     && cd ~/torch \
     && ./install.sh
@@ -50,9 +51,6 @@ RUN git clone https://github.com/twitter/torch-autograd.git /tmp/torch-autograd 
     && cd /tmp/torch-autograd \
     && luarocks make \
     && rm -rf /tmp/torch-autograd
-
-# Install Graphviz for nngraph
-RUN apt-get install -y graphviz
 
 # Clean up
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
