@@ -55,9 +55,9 @@ RUN git clone https://github.com/twitter/torch-autograd.git /tmp/torch-autograd 
 # Install CSV parser
 RUN luarocks install csv
 
-RUN echo "deb http://ppa.launchpad.net/mc3man/trusty-media/ubuntu trusty main" \
+RUN echo "deb http://ppa.launchpad.net/kirillshkrogalev/ffmpeg-next/ubuntu trusty main" \
     > /etc/apt/sources.list.d/ffmpeg.list \
-    && apt-key adv --keyserver keyserver.ubuntu.com --recv-keys ED8E640A
+    && apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 8EFE5982
 
 RUN apt-get update \
     && apt-get install -y ffmpeg
