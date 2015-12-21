@@ -18,7 +18,8 @@ docker build -t torch .
 ##### iTorch notebook
 
 ```sh
-GPU=0 nvidia-docker run --rm -it -v /path/to/notebook:/root/notebook -p 8888:8888 torch
+GPU=0 nvidia-docker run --rm -it -v /path/to/notebook:/root/notebook \
+  -e JUPYTER_PASSWORD=my_password -p 8888:8888 torch
 ```
 
 Replace `/path/to/notebook` with a directory on the host machine that you would

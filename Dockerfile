@@ -71,6 +71,11 @@ RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 VOLUME /root/notebook
 WORKDIR /root/notebook
 
+# Jupyter config
+RUN jupyter notebook --generate-config \
+    && echo "\nimport os\nfrom IPython.lib import passwd\npassword = os.environ.get('JUPYTER_PASSWORD')\nif password:\n  c.NotebookApp.password = passwd(password)\n" \
+    >> ~/.jupyter/jupyter_notebook_config.py
+
 # Expose Jupyter port
 EXPOSE 8888
 
