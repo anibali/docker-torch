@@ -19,9 +19,9 @@ If you are running Ubuntu, you can install proprietary NVIDIA drivers
 and CUDA [from the NVIDIA website](https://developer.nvidia.com/cuda-downloads).
 These are only required if you want to use GPU acceleration
 
-If you are running Windows or OSX then, then you will find it
-difficult/impossible to use GPU acceleration due to the fact that containers run
-in a virtual machine. Use the image without CUDA on those platforms.
+If you are running Windows or OSX then you will find it difficult/impossible to
+use GPU acceleration due to the fact that containers run in a virtual machine.
+Use the image without CUDA on those platforms.
 
 ##### With CUDA
 
