@@ -1,11 +1,4 @@
-# Base this image on the Cuda Ubuntu 14.04 image from nvidia-docker.
-# You can build yours by following the instructions at
-# https://github.com/NVIDIA/nvidia-docker
-FROM cuda
-
-# Alternatively, if you don't need cutorch then you can base this image on the
-# stock Ubuntu image
-# FROM ubuntu:14.04
+FROM nvidia/cuda:7.5
 
 # Install Python, Jupyter and build tools
 RUN apt-get update \
