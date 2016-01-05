@@ -48,14 +48,24 @@ RUN git clone https://github.com/twitter/torch-autograd.git /tmp/torch-autograd 
 # Install CSV parser
 RUN luarocks install csv
 
+# Install FFmpeg and Lua bindings
 RUN echo "deb http://ppa.launchpad.net/kirillshkrogalev/ffmpeg-next/ubuntu trusty main" \
     > /etc/apt/sources.list.d/ffmpeg.list \
     && apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 8EFE5982
-
 RUN apt-get update \
-    && apt-get install -y ffmpeg
-
-RUN luarocks install ffmpeg
+    && apt-get install -y \
+    cpp \
+    libavformat-ffmpeg-dev \
+    libavcodec-ffmpeg-dev \
+    libavutil-ffmpeg-dev \
+    libavfilter-ffmpeg-dev
+RUN apt-get update && apt-get install -y pkg-config
+ENV TORCHVID_COMMIT=17bddd4132e64357149f993f5bfda95d8ef8c6fe
+RUN git clone https://github.com/anibali/torchvid.git /tmp/torchvid \
+    && cd /tmp/torchvid \
+    && git checkout "$TORCHVID_COMMIT" \
+    && luarocks make rockspecs/torchvid-scm-0.rockspec \
+    && rm -rf /tmp/torchvid
 
 # Clean up
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
