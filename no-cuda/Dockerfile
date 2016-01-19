@@ -58,7 +58,8 @@ RUN apt-get update \
     libavformat-ffmpeg-dev \
     libavcodec-ffmpeg-dev \
     libavutil-ffmpeg-dev \
-    libavfilter-ffmpeg-dev
+    libavfilter-ffmpeg-dev \
+    ffmpeg
 RUN apt-get update && apt-get install -y pkg-config
 ENV TORCHVID_COMMIT=38410a689061508be0a5887ad150ef9c9d6afb47
 RUN git clone https://github.com/anibali/torchvid.git /tmp/torchvid \
