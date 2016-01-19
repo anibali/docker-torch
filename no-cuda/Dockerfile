@@ -54,7 +54,6 @@ RUN echo "deb http://ppa.launchpad.net/kirillshkrogalev/ffmpeg-next/ubuntu trust
     && apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 8EFE5982
 RUN apt-get update \
     && apt-get install -y \
-    cpp \
     libavformat-ffmpeg-dev \
     libavcodec-ffmpeg-dev \
     libavutil-ffmpeg-dev \
