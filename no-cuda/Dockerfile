@@ -78,6 +78,7 @@ WORKDIR /root/notebook
 RUN jupyter notebook --generate-config \
     && echo "\nimport os\nfrom IPython.lib import passwd\npassword = os.environ.get('JUPYTER_PASSWORD')\nif password:\n  c.NotebookApp.password = passwd(password)\n" \
     >> ~/.jupyter/jupyter_notebook_config.py
+COPY notebook.json /root/.jupyter/nbconfig/
 
 # Expose Jupyter port
 EXPOSE 8888
