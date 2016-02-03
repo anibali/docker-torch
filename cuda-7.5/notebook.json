@@ -4,7 +4,8 @@
       "lineNumbers": true,
       "indentUnit": 2,
       "tabSize": 2,
-      "indentWithTabs": false
+      "indentWithTabs": false,
+      "smartIndent": false
     }
   }
 }
