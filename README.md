@@ -91,7 +91,7 @@ Let's say that you create the following file at `/path/to/notebook.json`:
 }
 ```
 
-Then, when running the container, pass the following flag to mount the
+Then, when running the container, pass the following option to mount the
 configuration file into the container:
 
 ```sh
