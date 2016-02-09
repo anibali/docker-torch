@@ -52,8 +52,8 @@ docker build -t torch no-cuda
 ##### iTorch notebook
 
 ```sh
-GPU=0 nvidia-docker run --rm -it -v /path/to/notebook:/root/notebook \
-  -e JUPYTER_PASSWORD=my_password -p 8888:8888 torch
+GPU=0 nvidia-docker run --rm -it --volume=/path/to/notebook:/root/notebook \
+  --env=JUPYTER_PASSWORD=my_password --publish=8888:8888 torch
 ```
 
 If not using the CUDA base, this command should be modified slightly to use
@@ -68,3 +68,34 @@ like to store your work in.
 
 Point your web browser to [localhost:8888](http://localhost:8888) to start using
 the iTorch notebook.
+
+#### Custom configuration
+
+You can create a `notebook.json` config file to customise the editor. Some of the
+options you can change are documented at
+https://codemirror.net/doc/manual.html#config.
+
+Let's say that you create the following file at `/path/to/notebook.json`:
+
+```json
+{
+  "CodeCell": {
+    "cm_config": {
+      "lineNumbers": false,
+      "indentUnit": 2,
+      "tabSize": 2,
+      "indentWithTabs": false,
+      "smartIndent": true
+    }
+  }
+}
+```
+
+Then, when running the container, pass the following flag to mount the
+configuration file into the container:
+
+```sh
+--volume=/path/to/notebook.json:/root/.jupyter/nbconfig/notebook.json
+```
+
+You should now notice that your notebooks are configured accordingly.
