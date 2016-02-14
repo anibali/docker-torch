@@ -1,4 +1,4 @@
-FROM nvidia/cuda:7.5
+FROM {{BASE}}
 
 # Install Python, Jupyter and build tools
 RUN apt-get update \
@@ -22,7 +22,7 @@ RUN apt-get update \
     && apt-get install -y cmake curl unzip libreadline-dev libjpeg-dev \
     libpng-dev ncurses-dev imagemagick gnuplot gnuplot-x11 libssl-dev \
     libzmq3-dev graphviz
-ARG TORCH_DISTRO_COMMIT=502c90b757c8c0cd66cd689078d5991bdd75b0b0
+ARG TORCH_DISTRO_COMMIT={{TORCH_DISTRO_COMMIT}}
 RUN git clone https://github.com/torch/distro.git ~/torch --recursive \
     && cd ~/torch \
     && git checkout "$TORCH_DISTRO_COMMIT" \
@@ -42,7 +42,7 @@ RUN luarocks install moses
 RUN luarocks install csv
 
 # Install torch-autograd
-ARG AUTOGRAD_COMMIT=1e85a947c58052224d222d457e3b9a98c5a1b20a
+ARG AUTOGRAD_COMMIT={{AUTOGRAD_COMMIT}}
 RUN git clone https://github.com/twitter/torch-autograd.git /tmp/torch-autograd \
     && cd /tmp/torch-autograd \
     && git checkout "$AUTOGRAD_COMMIT" \
@@ -62,7 +62,7 @@ RUN apt-get update \
     ffmpeg \
     pkg-config
 
-ARG TORCHVID_COMMIT=38410a689061508be0a5887ad150ef9c9d6afb47
+ARG TORCHVID_COMMIT={{TORCHVID_COMMIT}}
 RUN git clone https://github.com/anibali/torchvid.git /tmp/torchvid \
     && cd /tmp/torchvid \
     && git checkout "$TORCHVID_COMMIT" \

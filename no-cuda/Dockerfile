@@ -22,8 +22,10 @@ RUN apt-get update \
     && apt-get install -y cmake curl unzip libreadline-dev libjpeg-dev \
     libpng-dev ncurses-dev imagemagick gnuplot gnuplot-x11 libssl-dev \
     libzmq3-dev graphviz
+ARG TORCH_DISTRO_COMMIT=502c90b757c8c0cd66cd689078d5991bdd75b0b0
 RUN git clone https://github.com/torch/distro.git ~/torch --recursive \
     && cd ~/torch \
+    && git checkout "$TORCH_DISTRO_COMMIT" \
     && ./install.sh
 
 # Export environment variables manually
@@ -33,20 +35,19 @@ ENV LUA_PATH='/root/.luarocks/share/lua/5.1/?.lua;/root/.luarocks/share/lua/5.1/
     LD_LIBRARY_PATH=/root/torch/install/lib:$LD_LIBRARY_PATH \
     DYLD_LIBRARY_PATH=/root/torch/install/lib:$DYLD_LIBRARY_PATH
 
-# Install LuaSocket - mainly because socket.gettime() is handy
-RUN luarocks install luasocket
-
 # Install Moses for utilities
 RUN luarocks install moses
 
-# Install torch-autograd
-RUN git clone https://github.com/twitter/torch-autograd.git /tmp/torch-autograd \
-    && cd /tmp/torch-autograd \
-    && luarocks make \
-    && rm -rf /tmp/torch-autograd
-
 # Install CSV parser
 RUN luarocks install csv
+
+# Install torch-autograd
+ARG AUTOGRAD_COMMIT=1e85a947c58052224d222d457e3b9a98c5a1b20a
+RUN git clone https://github.com/twitter/torch-autograd.git /tmp/torch-autograd \
+    && cd /tmp/torch-autograd \
+    && git checkout "$AUTOGRAD_COMMIT" \
+    && luarocks make \
+    && rm -rf /tmp/torch-autograd
 
 # Install FFmpeg and Lua bindings
 RUN echo "deb http://ppa.launchpad.net/kirillshkrogalev/ffmpeg-next/ubuntu trusty main" \
@@ -58,9 +59,10 @@ RUN apt-get update \
     libavcodec-ffmpeg-dev \
     libavutil-ffmpeg-dev \
     libavfilter-ffmpeg-dev \
-    ffmpeg
-RUN apt-get update && apt-get install -y pkg-config
-ENV TORCHVID_COMMIT=38410a689061508be0a5887ad150ef9c9d6afb47
+    ffmpeg \
+    pkg-config
+
+ARG TORCHVID_COMMIT=38410a689061508be0a5887ad150ef9c9d6afb47
 RUN git clone https://github.com/anibali/torchvid.git /tmp/torchvid \
     && cd /tmp/torchvid \
     && git checkout "$TORCHVID_COMMIT" \
@@ -76,7 +78,7 @@ WORKDIR /root/notebook
 
 # Jupyter config
 RUN jupyter notebook --generate-config \
-    && echo "\nimport os\nfrom IPython.lib import passwd\npassword = os.environ.get('JUPYTER_PASSWORD')\nif password:\n  c.NotebookApp.password = passwd(password)\n" \
+ && echo "\nimport os\nfrom IPython.lib import passwd\npassword = os.environ.get('JUPYTER_PASSWORD')\nif password:\n  c.NotebookApp.password = passwd(password)\n" \
     >> ~/.jupyter/jupyter_notebook_config.py
 COPY notebook.json /root/.jupyter/nbconfig/
 
