@@ -41,13 +41,9 @@ RUN luarocks install moses
 # Install CSV parser
 RUN luarocks install csv
 
-# Install torch-autograd
-ARG AUTOGRAD_COMMIT=1e85a947c58052224d222d457e3b9a98c5a1b20a
-RUN git clone https://github.com/twitter/torch-autograd.git /tmp/torch-autograd \
-    && cd /tmp/torch-autograd \
-    && git checkout "$AUTOGRAD_COMMIT" \
-    && luarocks make \
-    && rm -rf /tmp/torch-autograd
+# Install torch-autograd and rnn
+RUN luarocks install autograd
+RUN luarocks install rnn
 
 # Install FFmpeg and Lua bindings
 RUN echo "deb http://ppa.launchpad.net/kirillshkrogalev/ffmpeg-next/ubuntu trusty main" \
