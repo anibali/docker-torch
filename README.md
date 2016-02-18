@@ -28,16 +28,20 @@ Use the image without CUDA on those platforms.
 Firstly ensure that you have a supported NVIDIA graphics card with the
 appropriate drivers and CUDA libraries installed.
 
+Download the CuDNNv4 library from https://developer.nvidia.com/cudnn. Extract
+it, and copy the .so file in lib64/ to `libcudnn.so.4` in the cuda-7.5 directory
+of docker-torch. Note that there are symlinks in lib64/, so you will need to
+copy the actual library and not a link (in my case it was `libcudnn.so.4.0.7`).
+
 Build the image using the following command:
 
 ```sh
 docker build -t torch cuda-7.5
 ```
 
-You will also need to download the `nvidia-docker` wrapper script to start the
-container later. This can be found at
-[NVIDIA/nvidia-docker](https://github.com/NVIDIA/nvidia-docker) and should
-be made executable and added to your system path.
+You will also need to install `nvidia-docker`, which we will use to start the
+container with GPU access. This can be found at
+[NVIDIA/nvidia-docker](https://github.com/NVIDIA/nvidia-docker).
 
 ##### Without CUDA
 
@@ -52,7 +56,7 @@ docker build -t torch no-cuda
 ##### iTorch notebook
 
 ```sh
-GPU=0 nvidia-docker run --rm -it --volume=/path/to/notebook:/root/notebook \
+NV_GPU=0 nvidia-docker run --rm -it --volume=/path/to/notebook:/root/notebook \
   --env=JUPYTER_PASSWORD=my_password --publish=8888:8888 torch
 ```
 

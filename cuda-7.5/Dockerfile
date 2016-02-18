@@ -22,7 +22,7 @@ RUN apt-get update \
     && apt-get install -y cmake curl unzip libreadline-dev libjpeg-dev \
     libpng-dev ncurses-dev imagemagick gnuplot gnuplot-x11 libssl-dev \
     libzmq3-dev graphviz
-ARG TORCH_DISTRO_COMMIT=502c90b757c8c0cd66cd689078d5991bdd75b0b0
+ARG TORCH_DISTRO_COMMIT=eef4ded58283bf177367deedb8f3f581ecc69a58
 RUN git clone https://github.com/torch/distro.git ~/torch --recursive \
     && cd ~/torch \
     && git checkout "$TORCH_DISTRO_COMMIT" \
@@ -77,6 +77,10 @@ RUN jupyter notebook --generate-config \
  && echo "\nimport os\nfrom IPython.lib import passwd\npassword = os.environ.get('JUPYTER_PASSWORD')\nif password:\n  c.NotebookApp.password = passwd(password)\n" \
     >> ~/.jupyter/jupyter_notebook_config.py
 COPY notebook.json /root/.jupyter/nbconfig/
+
+# Install CuDNN with Torch bindings
+COPY libcudnn.so.4 /lib/libcudnn.so.4
+RUN luarocks install cudnn
 
 # Expose Jupyter port
 EXPOSE 8888

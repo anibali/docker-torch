@@ -1,4 +1,4 @@
-FROM {{BASE}}
+FROM $BASE
 
 # Install Python, Jupyter and build tools
 RUN apt-get update \
@@ -22,7 +22,7 @@ RUN apt-get update \
     && apt-get install -y cmake curl unzip libreadline-dev libjpeg-dev \
     libpng-dev ncurses-dev imagemagick gnuplot gnuplot-x11 libssl-dev \
     libzmq3-dev graphviz
-ARG TORCH_DISTRO_COMMIT={{TORCH_DISTRO_COMMIT}}
+ARG TORCH_DISTRO_COMMIT=$LATEST_TORCH_DISTRO_COMMIT
 RUN git clone https://github.com/torch/distro.git ~/torch --recursive \
     && cd ~/torch \
     && git checkout "$TORCH_DISTRO_COMMIT" \
@@ -58,7 +58,7 @@ RUN apt-get update \
     ffmpeg \
     pkg-config
 
-ARG TORCHVID_COMMIT={{TORCHVID_COMMIT}}
+ARG TORCHVID_COMMIT=$LATEST_TORCHVID_COMMIT
 RUN git clone https://github.com/anibali/torchvid.git /tmp/torchvid \
     && cd /tmp/torchvid \
     && git checkout "$TORCHVID_COMMIT" \
@@ -77,7 +77,7 @@ RUN jupyter notebook --generate-config \
  && echo "\nimport os\nfrom IPython.lib import passwd\npassword = os.environ.get('JUPYTER_PASSWORD')\nif password:\n  c.NotebookApp.password = passwd(password)\n" \
     >> ~/.jupyter/jupyter_notebook_config.py
 COPY notebook.json /root/.jupyter/nbconfig/
-
+$CUDA_ONLY_STEPS
 # Expose Jupyter port
 EXPOSE 8888
 
