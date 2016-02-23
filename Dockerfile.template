@@ -1,32 +1,31 @@
 FROM $BASE
 
-# Install Python, Jupyter and build tools
-RUN apt-get update \
-    && apt-get install -y python3 python3-setuptools python3-dev \
-    build-essential git
-RUN easy_install3 pip \
-    && pip install jupyter
-
 # Install OpenBLAS
 RUN apt-get update \
-    && apt-get install -y gfortran
+ && apt-get install -y build-essential git gfortran
 RUN git clone https://github.com/xianyi/OpenBLAS.git /tmp/OpenBLAS \
-    && cd /tmp/OpenBLAS \
-    && [ $(getconf _NPROCESSORS_ONLN) = 1 ] && export USE_OPENMP=0 || export USE_OPENMP=1 \
-    && make NO_AFFINITY=1 \
-    && make install \
-    && rm -rf /tmp/OpenBLAS
+ && cd /tmp/OpenBLAS \
+ && [ $(getconf _NPROCESSORS_ONLN) = 1 ] && export USE_OPENMP=0 || export USE_OPENMP=1 \
+ && make NO_AFFINITY=1 \
+ && make install \
+ && rm -rf /tmp/OpenBLAS
+
+# Install Python, Jupyter and build tools
+RUN apt-get update \
+ && apt-get install -y python3 python3-setuptools python3-dev
+RUN easy_install3 pip \
+ && pip install 'notebook>=4.1.0' jupyter
 
 # Install Torch
 RUN apt-get update \
-    && apt-get install -y cmake curl unzip libreadline-dev libjpeg-dev \
+ && apt-get install -y cmake curl unzip libreadline-dev libjpeg-dev \
     libpng-dev ncurses-dev imagemagick gnuplot gnuplot-x11 libssl-dev \
     libzmq3-dev graphviz
 ARG TORCH_DISTRO_COMMIT=$LATEST_TORCH_DISTRO_COMMIT
 RUN git clone https://github.com/torch/distro.git ~/torch --recursive \
-    && cd ~/torch \
-    && git checkout "$TORCH_DISTRO_COMMIT" \
-    && ./install.sh
+ && cd ~/torch \
+ && git checkout "$TORCH_DISTRO_COMMIT" \
+ && ./install.sh
 
 # Export environment variables manually
 ENV LUA_PATH='/root/.luarocks/share/lua/5.1/?.lua;/root/.luarocks/share/lua/5.1/?/init.lua;/root/torch/install/share/lua/5.1/?.lua;/root/torch/install/share/lua/5.1/?/init.lua;./?.lua;/root/torch/install/share/luajit-2.1.0-alpha/?.lua;/usr/local/share/lua/5.1/?.lua;/usr/local/share/lua/5.1/?/init.lua' \
@@ -48,9 +47,9 @@ RUN luarocks install rnn
 # Install FFmpeg and Lua bindings
 RUN echo "deb http://ppa.launchpad.net/kirillshkrogalev/ffmpeg-next/ubuntu trusty main" \
     > /etc/apt/sources.list.d/ffmpeg.list \
-    && apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 8EFE5982
+ && apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 8EFE5982
 RUN apt-get update \
-    && apt-get install -y \
+ && apt-get install -y \
     libavformat-ffmpeg-dev \
     libavcodec-ffmpeg-dev \
     libavutil-ffmpeg-dev \
@@ -60,10 +59,10 @@ RUN apt-get update \
 
 ARG TORCHVID_COMMIT=$LATEST_TORCHVID_COMMIT
 RUN git clone https://github.com/anibali/torchvid.git /tmp/torchvid \
-    && cd /tmp/torchvid \
-    && git checkout "$TORCHVID_COMMIT" \
-    && luarocks make rockspecs/torchvid-scm-0.rockspec \
-    && rm -rf /tmp/torchvid
+ && cd /tmp/torchvid \
+ && git checkout "$TORCHVID_COMMIT" \
+ && luarocks make rockspecs/torchvid-scm-0.rockspec \
+ && rm -rf /tmp/torchvid
 
 # Clean up
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
