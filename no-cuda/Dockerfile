@@ -21,7 +21,7 @@ RUN apt-get update \
  && apt-get install -y cmake curl unzip libreadline-dev libjpeg-dev \
     libpng-dev ncurses-dev imagemagick gnuplot gnuplot-x11 libssl-dev \
     libzmq3-dev graphviz
-ARG TORCH_DISTRO_COMMIT=eef4ded58283bf177367deedb8f3f581ecc69a58
+ARG TORCH_DISTRO_COMMIT=4b1fe0f64391a1073abc7603cf54f6c6000707fc
 RUN git clone https://github.com/torch/distro.git ~/torch --recursive \
  && cd ~/torch \
  && git checkout "$TORCH_DISTRO_COMMIT" \
@@ -40,9 +40,13 @@ RUN luarocks install moses
 # Install CSV parser
 RUN luarocks install csv
 
-# Install torch-autograd and rnn
+# Install torch-autograd, rnn and unsup
 RUN luarocks install autograd
 RUN luarocks install rnn
+RUN luarocks install unsup
+
+# Install HTTP client
+RUN luarocks install httpclient
 
 # Install FFmpeg and Lua bindings
 RUN echo "deb http://ppa.launchpad.net/kirillshkrogalev/ffmpeg-next/ubuntu trusty main" \

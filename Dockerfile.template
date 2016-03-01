@@ -40,9 +40,13 @@ RUN luarocks install moses
 # Install CSV parser
 RUN luarocks install csv
 
-# Install torch-autograd and rnn
+# Install torch-autograd, rnn and unsup
 RUN luarocks install autograd
 RUN luarocks install rnn
+RUN luarocks install unsup
+
+# Install HTTP client
+RUN luarocks install httpclient
 
 # Install FFmpeg and Lua bindings
 RUN echo "deb http://ppa.launchpad.net/kirillshkrogalev/ffmpeg-next/ubuntu trusty main" \
