@@ -48,6 +48,8 @@ RUN luarocks install unsup
 # Install HTTP client
 RUN luarocks install httpclient
 
+RUN luarocks install luaposix
+
 # Install FFmpeg and Lua bindings
 RUN echo "deb http://ppa.launchpad.net/kirillshkrogalev/ffmpeg-next/ubuntu trusty main" \
     > /etc/apt/sources.list.d/ffmpeg.list \

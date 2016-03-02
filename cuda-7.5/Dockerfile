@@ -21,7 +21,7 @@ RUN apt-get update \
  && apt-get install -y cmake curl unzip libreadline-dev libjpeg-dev \
     libpng-dev ncurses-dev imagemagick gnuplot gnuplot-x11 libssl-dev \
     libzmq3-dev graphviz
-ARG TORCH_DISTRO_COMMIT=4b1fe0f64391a1073abc7603cf54f6c6000707fc
+ARG TORCH_DISTRO_COMMIT=9d80a0559cf75f8d6287dff033a63052bac2793a
 RUN git clone https://github.com/torch/distro.git ~/torch --recursive \
  && cd ~/torch \
  && git checkout "$TORCH_DISTRO_COMMIT" \
@@ -47,6 +47,8 @@ RUN luarocks install unsup
 
 # Install HTTP client
 RUN luarocks install httpclient
+
+RUN luarocks install luaposix
 
 # Install FFmpeg and Lua bindings
 RUN echo "deb http://ppa.launchpad.net/kirillshkrogalev/ffmpeg-next/ubuntu trusty main" \
