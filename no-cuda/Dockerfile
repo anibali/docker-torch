@@ -21,7 +21,7 @@ RUN apt-get update \
  && apt-get install -y cmake curl unzip libreadline-dev libjpeg-dev \
     libpng-dev ncurses-dev imagemagick gnuplot gnuplot-x11 libssl-dev \
     libzmq3-dev graphviz
-ARG TORCH_DISTRO_COMMIT=9d80a0559cf75f8d6287dff033a63052bac2793a
+ARG TORCH_DISTRO_COMMIT=f972c4253b14b95b53aefe7b24efa496223e73f2
 RUN git clone https://github.com/torch/distro.git ~/torch --recursive \
  && cd ~/torch \
  && git checkout "$TORCH_DISTRO_COMMIT" \
