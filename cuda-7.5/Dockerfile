@@ -21,7 +21,7 @@ RUN apt-get update \
  && apt-get install -y cmake curl unzip libreadline-dev libjpeg-dev \
     libpng-dev ncurses-dev imagemagick gnuplot gnuplot-x11 libssl-dev \
     libzmq3-dev graphviz
-ARG TORCH_DISTRO_COMMIT=f972c4253b14b95b53aefe7b24efa496223e73f2
+ARG TORCH_DISTRO_COMMIT=660bdfea60df0d7c6db690c13ac0c23f13fcb3e7
 RUN git clone https://github.com/torch/distro.git ~/torch --recursive \
  && cd ~/torch \
  && git checkout "$TORCH_DISTRO_COMMIT" \
@@ -33,6 +33,16 @@ ENV LUA_PATH='/root/.luarocks/share/lua/5.1/?.lua;/root/.luarocks/share/lua/5.1/
     PATH=/root/torch/install/bin:$PATH \
     LD_LIBRARY_PATH=/root/torch/install/lib:$LD_LIBRARY_PATH \
     DYLD_LIBRARY_PATH=/root/torch/install/lib:$DYLD_LIBRARY_PATH
+
+# Install HDF5 and Lua bindings
+RUN apt-get update \
+ && apt-get install -y libhdf5-dev hdf5-tools
+ARG TORCH_HDF5_COMMIT=f364b442655b0fe21dafe83104f42c3bb7b2a594
+RUN git clone https://github.com/deepmind/torch-hdf5.git /tmp/torch-hdf5 \
+ && cd /tmp/torch-hdf5 \
+ && git checkout "$TORCH_HDF5_COMMIT" \
+ && luarocks make hdf5-0-0.rockspec LIBHDF5_LIBDIR="/usr/lib/x86_64-linux-gnu/" \
+ && rm -rf /tmp/torch-hdf5
 
 # Install Moses for utilities
 RUN luarocks install moses
@@ -48,7 +58,11 @@ RUN luarocks install unsup
 # Install HTTP client
 RUN luarocks install httpclient
 
+# Install Lua POSIX bindings
 RUN luarocks install luaposix
+
+# Install random number generator which allows multiple RNG instances
+RUN luarocks install lrandom
 
 # Install FFmpeg and Lua bindings
 RUN echo "deb http://ppa.launchpad.net/kirillshkrogalev/ffmpeg-next/ubuntu trusty main" \
@@ -62,7 +76,6 @@ RUN apt-get update \
     libavfilter-ffmpeg-dev \
     ffmpeg \
     pkg-config
-
 ARG TORCHVID_COMMIT=38410a689061508be0a5887ad150ef9c9d6afb47
 RUN git clone https://github.com/anibali/torchvid.git /tmp/torchvid \
  && cd /tmp/torchvid \

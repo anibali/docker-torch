@@ -4,11 +4,12 @@
 
 export LATEST_TORCH_DISTRO_COMMIT=`git ls-remote -h https://github.com/torch/distro.git master | awk '{ print $1 }'`
 export LATEST_TORCHVID_COMMIT=`git ls-remote -h https://github.com/anibali/torchvid.git master | awk '{ print $1 }'`
+export LATEST_TORCH_HDF5_COMMIT=`git ls-remote -h https://github.com/deepmind/torch-hdf5.git master | awk '{ print $1 }'`
 
 # Create Dockerfiles from template
 
 template="Dockerfile.template"
-shell_format='$BASE:$LATEST_TORCH_DISTRO_COMMIT:$LATEST_TORCHVID_COMMIT:$CUDA_ONLY_STEPS'
+shell_format='$BASE:$LATEST_TORCH_DISTRO_COMMIT:$LATEST_TORCHVID_COMMIT:$LATEST_TORCH_HDF5_COMMIT:$CUDA_ONLY_STEPS'
 
 # CUDA-enabled
 

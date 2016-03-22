@@ -34,6 +34,16 @@ ENV LUA_PATH='/root/.luarocks/share/lua/5.1/?.lua;/root/.luarocks/share/lua/5.1/
     LD_LIBRARY_PATH=/root/torch/install/lib:$LD_LIBRARY_PATH \
     DYLD_LIBRARY_PATH=/root/torch/install/lib:$DYLD_LIBRARY_PATH
 
+# Install HDF5 and Lua bindings
+RUN apt-get update \
+ && apt-get install -y libhdf5-dev hdf5-tools
+ARG TORCH_HDF5_COMMIT=$LATEST_TORCH_HDF5_COMMIT
+RUN git clone https://github.com/deepmind/torch-hdf5.git /tmp/torch-hdf5 \
+ && cd /tmp/torch-hdf5 \
+ && git checkout "$TORCH_HDF5_COMMIT" \
+ && luarocks make hdf5-0-0.rockspec LIBHDF5_LIBDIR="/usr/lib/x86_64-linux-gnu/" \
+ && rm -rf /tmp/torch-hdf5
+
 # Install Moses for utilities
 RUN luarocks install moses
 
@@ -48,7 +58,11 @@ RUN luarocks install unsup
 # Install HTTP client
 RUN luarocks install httpclient
 
+# Install Lua POSIX bindings
 RUN luarocks install luaposix
+
+# Install random number generator which allows multiple RNG instances
+RUN luarocks install lrandom
 
 # Install FFmpeg and Lua bindings
 RUN echo "deb http://ppa.launchpad.net/kirillshkrogalev/ffmpeg-next/ubuntu trusty main" \
@@ -62,7 +76,6 @@ RUN apt-get update \
     libavfilter-ffmpeg-dev \
     ffmpeg \
     pkg-config
-
 ARG TORCHVID_COMMIT=$LATEST_TORCHVID_COMMIT
 RUN git clone https://github.com/anibali/torchvid.git /tmp/torchvid \
  && cd /tmp/torchvid \
