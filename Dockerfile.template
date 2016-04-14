@@ -47,6 +47,12 @@ RUN git clone https://github.com/deepmind/torch-hdf5.git /tmp/torch-hdf5 \
 # Install Moses for utilities
 RUN luarocks install moses
 
+# Install JSON parser
+RUN luarocks install lua-cjson
+
+# Install XML parser
+RUN luarocks install luaxpath
+
 # Install CSV parser
 RUN luarocks install csv
 

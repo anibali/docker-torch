@@ -21,7 +21,7 @@ RUN apt-get update \
  && apt-get install -y cmake curl unzip libreadline-dev libjpeg-dev \
     libpng-dev ncurses-dev imagemagick gnuplot gnuplot-x11 libssl-dev \
     libzmq3-dev graphviz
-ARG TORCH_DISTRO_COMMIT=660bdfea60df0d7c6db690c13ac0c23f13fcb3e7
+ARG TORCH_DISTRO_COMMIT=cbb51612fa7011fcdd3481e31719268a18051594
 RUN git clone https://github.com/torch/distro.git ~/torch --recursive \
  && cd ~/torch \
  && git checkout "$TORCH_DISTRO_COMMIT" \
@@ -46,6 +46,12 @@ RUN git clone https://github.com/deepmind/torch-hdf5.git /tmp/torch-hdf5 \
 
 # Install Moses for utilities
 RUN luarocks install moses
+
+# Install JSON parser
+RUN luarocks install lua-cjson
+
+# Install XML parser
+RUN luarocks install luaxpath
 
 # Install CSV parser
 RUN luarocks install csv
