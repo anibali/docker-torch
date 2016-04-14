@@ -2,6 +2,11 @@
 
 Ubuntu 14.04 + Torch + CUDA (optional)
 
+Can be used to:
+
+* Run an iTorch notebook server
+* Execute Torch scripts
+
 #### Requirements
 
 In order to use this image you must have Docker Engine installed. Instructions
@@ -76,7 +81,23 @@ like to store your work in.
 Point your web browser to [localhost:8888](http://localhost:8888) to start using
 the iTorch notebook.
 
-#### Custom configuration
+##### Running Torch scripts
+
+It is also possible to run Torch programs inside a container using the `th`
+command. For example, if you are within a directory containing some Torch
+project with entrypoint `my-script.lua`, you could run it with the following
+command:
+
+```sh
+NV_GPU=0 nvidia-docker run --rm -it --volume=$PWD:/root/notebook torch th my-script.lua
+```
+
+The important thing to remember is that the default working directory in the
+container is `/root/notebook`. By creating a volume which maps the current
+working directory to that location in the image, `th` is able to find and
+run our script.
+
+#### Custom iTorch notebook configuration
 
 You can create a `notebook.json` config file to customise the editor. Some of the
 options you can change are documented at
