@@ -21,7 +21,7 @@ RUN apt-get update \
  && apt-get install -y cmake curl unzip libreadline-dev libjpeg-dev \
     libpng-dev ncurses-dev imagemagick gnuplot gnuplot-x11 libssl-dev \
     libzmq3-dev graphviz
-ARG TORCH_DISTRO_COMMIT=cbb51612fa7011fcdd3481e31719268a18051594
+ARG TORCH_DISTRO_COMMIT=92af9df13653733f28adbc2eac801363236d24ff
 RUN git clone https://github.com/torch/distro.git ~/torch --recursive \
  && cd ~/torch \
  && git checkout "$TORCH_DISTRO_COMMIT" \
@@ -88,6 +88,9 @@ RUN git clone https://github.com/anibali/torchvid.git /tmp/torchvid \
  && git checkout "$TORCHVID_COMMIT" \
  && luarocks make rockspecs/torchvid-scm-0.rockspec \
  && rm -rf /tmp/torchvid
+
+# Install iTorch
+RUN luarocks install itorch
 
 # Clean up
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
