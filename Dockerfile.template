@@ -92,6 +92,8 @@ RUN git clone https://github.com/anibali/torchvid.git /tmp/torchvid \
 # Install iTorch
 RUN luarocks install itorch
 
+RUN apt-get update && apt-get install -y wget
+
 # Clean up
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
