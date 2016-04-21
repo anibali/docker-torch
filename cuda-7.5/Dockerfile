@@ -92,6 +92,9 @@ RUN git clone https://github.com/anibali/torchvid.git /tmp/torchvid \
 # Install iTorch
 RUN luarocks install itorch
 
+# Install helpers for loading datasets
+RUN luarocks install dataload
+
 RUN apt-get update && apt-get install -y wget
 
 # Clean up
