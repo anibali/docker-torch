@@ -95,6 +95,10 @@ RUN luarocks install itorch
 # Install helpers for loading datasets
 RUN luarocks install dataload
 
+# Install GraphicsMagick and Lua bindings
+RUN apt-get update && apt-get install -y graphicsmagick libgraphicsmagick1-dev
+RUN luarocks install graphicsmagick
+
 RUN apt-get update && apt-get install -y wget
 
 # Clean up
