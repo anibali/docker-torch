@@ -64,6 +64,10 @@ RUN luarocks install unsup
 # Install HTTP client
 RUN luarocks install httpclient
 
+
+ENV LIBRARY_PATH=/usr/local/cuda/lib64/stubs \
+	DYLD_LIBRARY_PATH=/root/torch/install/lib:/root/torch/install/lib:/root/torch/install/lib
+
 # Install Lua POSIX bindings
 RUN luarocks install luaposix
 
