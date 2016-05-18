@@ -14,14 +14,14 @@ RUN git clone https://github.com/xianyi/OpenBLAS.git /tmp/OpenBLAS \
 RUN apt-get update \
  && apt-get install -y python3 python3-setuptools python3-dev
 RUN easy_install3 pip \
- && pip install 'notebook>=4.1.0' jupyter
+ && pip install 'notebook>=4.2.0' jupyter
 
 # Install Torch
 RUN apt-get update \
  && apt-get install -y cmake curl unzip libreadline-dev libjpeg-dev \
     libpng-dev ncurses-dev imagemagick gnuplot gnuplot-x11 libssl-dev \
     libzmq3-dev graphviz
-ARG TORCH_DISTRO_COMMIT=92af9df13653733f28adbc2eac801363236d24ff
+ARG TORCH_DISTRO_COMMIT=2f020918f561c108bb5b95e561b63dbbe635ec62
 RUN git clone https://github.com/torch/distro.git ~/torch --recursive \
  && cd ~/torch \
  && git checkout "$TORCH_DISTRO_COMMIT" \
@@ -37,7 +37,7 @@ ENV LUA_PATH='/root/.luarocks/share/lua/5.1/?.lua;/root/.luarocks/share/lua/5.1/
 # Install HDF5 and Lua bindings
 RUN apt-get update \
  && apt-get install -y libhdf5-dev hdf5-tools
-ARG TORCH_HDF5_COMMIT=f364b442655b0fe21dafe83104f42c3bb7b2a594
+ARG TORCH_HDF5_COMMIT=639bb4e62417ac392bf31a53cdd495d19337642b
 RUN git clone https://github.com/deepmind/torch-hdf5.git /tmp/torch-hdf5 \
  && cd /tmp/torch-hdf5 \
  && git checkout "$TORCH_HDF5_COMMIT" \
@@ -65,7 +65,7 @@ RUN luarocks install unsup
 RUN luarocks install httpclient
 
 # Install Lua POSIX bindings
-RUN luarocks install luaposix
+RUN unset LIBRARY_PATH && luarocks install luaposix
 
 # Install random number generator which allows multiple RNG instances
 RUN luarocks install lrandom
