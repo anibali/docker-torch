@@ -15,11 +15,10 @@ shell_format='$BASE:$LATEST_TORCH_DISTRO_COMMIT:$LATEST_TORCHVID_COMMIT:$LATEST_
 
 dest="cuda-7.5/Dockerfile"
 mkdir -p "$(dirname "$dest")"
-export BASE=nvidia/cuda:7.5
+export BASE=nvidia/cuda:7.5-cudnn4-devel
 
 export CUDA_ONLY_STEPS='
 # Install CuDNN with Torch bindings
-COPY libcudnn.so.4 /lib/libcudnn.so.4
 RUN luarocks install cudnn
 '
 

@@ -33,14 +33,6 @@ Use the image without CUDA on those platforms.
 Firstly ensure that you have a supported NVIDIA graphics card with the
 appropriate drivers and CUDA libraries installed.
 
-Download the CuDNNv4 library from https://developer.nvidia.com/cudnn. Extract
-it, and copy the .so file in lib64/ to `libcudnn.so.4` in the cuda-7.5 directory
-of docker-torch. Note that there are symlinks in lib64/, so you will need to
-copy the actual library and not a link (in my case it was `libcudnn.so.4.0.7`).
-
-If you don't plan on using CuDNN and don't want to download the library from
-NVIDIA, you can simply create a blank file called `libcudnn.so.4` instead.
-
 Build the image using the following command:
 
 ```sh

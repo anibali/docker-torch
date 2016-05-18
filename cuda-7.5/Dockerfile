@@ -1,4 +1,4 @@
-FROM nvidia/cuda:7.5
+FROM nvidia/cuda:7.5-cudnn4-devel
 
 # Install OpenBLAS
 RUN apt-get update \
@@ -115,7 +115,6 @@ RUN jupyter notebook --generate-config \
 COPY notebook.json /root/.jupyter/nbconfig/
 
 # Install CuDNN with Torch bindings
-COPY libcudnn.so.4 /lib/libcudnn.so.4
 RUN luarocks install cudnn
 
 # Expose Jupyter port
