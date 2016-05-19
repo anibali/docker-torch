@@ -70,6 +70,18 @@ RUN unset LIBRARY_PATH && luarocks install luaposix
 # Install random number generator which allows multiple RNG instances
 RUN luarocks install lrandom
 
+# Install iTorch
+RUN luarocks install itorch
+
+# Install helpers for loading datasets
+RUN luarocks install dataload
+
+# Install GraphicsMagick and Lua bindings
+RUN apt-get update && apt-get install -y graphicsmagick libgraphicsmagick1-dev
+RUN luarocks install graphicsmagick
+
+RUN apt-get update && apt-get install -y wget
+
 # Install FFmpeg and Lua bindings
 RUN echo "deb http://ppa.launchpad.net/kirillshkrogalev/ffmpeg-next/ubuntu trusty main" \
     > /etc/apt/sources.list.d/ffmpeg.list \
@@ -82,24 +94,12 @@ RUN apt-get update \
     libavfilter-ffmpeg-dev \
     ffmpeg \
     pkg-config
-ARG TORCHVID_COMMIT=38410a689061508be0a5887ad150ef9c9d6afb47
+ARG TORCHVID_COMMIT=f7bbef011a468e6c3cb4746bc4bf067373afffb6
 RUN git clone https://github.com/anibali/torchvid.git /tmp/torchvid \
  && cd /tmp/torchvid \
  && git checkout "$TORCHVID_COMMIT" \
  && luarocks make rockspecs/torchvid-scm-0.rockspec \
  && rm -rf /tmp/torchvid
-
-# Install iTorch
-RUN luarocks install itorch
-
-# Install helpers for loading datasets
-RUN luarocks install dataload
-
-# Install GraphicsMagick and Lua bindings
-RUN apt-get update && apt-get install -y graphicsmagick libgraphicsmagick1-dev
-RUN luarocks install graphicsmagick
-
-RUN apt-get update && apt-get install -y wget
 
 # Clean up
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
