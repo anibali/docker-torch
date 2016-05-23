@@ -80,6 +80,8 @@ RUN luarocks install dataload
 RUN apt-get update && apt-get install -y graphicsmagick libgraphicsmagick1-dev
 RUN luarocks install graphicsmagick
 
+RUN luarocks install optnet
+
 RUN apt-get update && apt-get install -y wget
 
 # Install FFmpeg and Lua bindings
