@@ -21,7 +21,7 @@ RUN apt-get update \
  && apt-get install -y cmake curl unzip libreadline-dev libjpeg-dev \
     libpng-dev ncurses-dev imagemagick gnuplot gnuplot-x11 libssl-dev \
     libzmq3-dev graphviz
-ARG TORCH_DISTRO_COMMIT=2f020918f561c108bb5b95e561b63dbbe635ec62
+ARG TORCH_DISTRO_COMMIT=42132cb163ca6214354cd7ff0f5e124148989d73
 RUN git clone https://github.com/torch/distro.git ~/torch --recursive \
  && cd ~/torch \
  && git checkout "$TORCH_DISTRO_COMMIT" \
@@ -102,6 +102,20 @@ RUN git clone https://github.com/anibali/torchvid.git /tmp/torchvid \
  && git checkout "$TORCHVID_COMMIT" \
  && luarocks make rockspecs/torchvid-scm-0.rockspec \
  && rm -rf /tmp/torchvid
+
+# OpenCV
+RUN cd /tmp \
+ && wget https://github.com/Itseez/opencv/archive/3.1.0.zip \
+ && unzip 3.1.0.zip \
+ && cd opencv-3.1.0 \
+ && mkdir build \
+ && cd build \
+ && cmake -D CMAKE_BUILD_TYPE=RELEASE -D CMAKE_INSTALL_PREFIX=/usr/local .. \
+ && make -j $(getconf _NPROCESSORS_ONLN) \
+ && make install
+RUN luarocks install cv
+
+RUN luarocks install lua-zlib
 
 # Clean up
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
