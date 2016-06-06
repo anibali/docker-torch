@@ -19,7 +19,7 @@ export BASE=nvidia/cuda:7.5-cudnn4-devel
 
 export CUDA_ONLY_STEPS='
 # Install CuDNN with Torch bindings
-RUN luarocks install cudnn
+RUN luarocks install https://raw.githubusercontent.com/soumith/cudnn.torch/R4/cudnn-scm-1.rockspec
 '
 
 envsubst $shell_format < $template > $dest
