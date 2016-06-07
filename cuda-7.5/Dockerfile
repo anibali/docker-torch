@@ -117,6 +117,8 @@ RUN luarocks install cv
 
 RUN luarocks install lua-zlib
 
+RUN luarocks install nninit
+
 # Clean up
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
