@@ -15,11 +15,11 @@ shell_format='$BASE:$LATEST_TORCH_DISTRO_COMMIT:$LATEST_TORCHVID_COMMIT:$LATEST_
 
 dest="cuda-7.5/Dockerfile"
 mkdir -p "$(dirname "$dest")"
-export BASE=nvidia/cuda:7.5-cudnn4-devel
+export BASE=nvidia/cuda:7.5-cudnn5-devel
 
 export CUDA_ONLY_STEPS='
 # Install CuDNN with Torch bindings
-RUN luarocks install https://raw.githubusercontent.com/soumith/cudnn.torch/R4/cudnn-scm-1.rockspec
+RUN luarocks install https://raw.githubusercontent.com/soumith/cudnn.torch/R5/cudnn-scm-1.rockspec
 '
 
 envsubst $shell_format < $template > $dest

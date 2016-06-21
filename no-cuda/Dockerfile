@@ -1,27 +1,27 @@
 FROM ubuntu:14.04
 
-# Install OpenBLAS
+# Install dependencies for OpenBLAS, Jupyter, and Torch
 RUN apt-get update \
- && apt-get install -y build-essential git gfortran
+ && apt-get install -y \
+    build-essential git gfortran \
+    python3 python3-setuptools python3-dev \
+    cmake curl wget unzip libreadline-dev libjpeg-dev libpng-dev ncurses-dev \
+    imagemagick gnuplot gnuplot-x11 libssl-dev libzmq3-dev graphviz
+
+# Install OpenBLAS
 RUN git clone https://github.com/xianyi/OpenBLAS.git /tmp/OpenBLAS \
  && cd /tmp/OpenBLAS \
  && [ $(getconf _NPROCESSORS_ONLN) = 1 ] && export USE_OPENMP=0 || export USE_OPENMP=1 \
- && make NO_AFFINITY=1 \
+ && make -j $(getconf _NPROCESSORS_ONLN) NO_AFFINITY=1 \
  && make install \
  && rm -rf /tmp/OpenBLAS
 
-# Install Python, Jupyter and build tools
-RUN apt-get update \
- && apt-get install -y python3 python3-setuptools python3-dev
+# Install Jupyter
 RUN easy_install3 pip \
- && pip install 'notebook>=4.2.0' jupyter
+ && pip install 'notebook==4.2.1' jupyter
 
 # Install Torch
-RUN apt-get update \
- && apt-get install -y cmake curl unzip libreadline-dev libjpeg-dev \
-    libpng-dev ncurses-dev imagemagick gnuplot gnuplot-x11 libssl-dev \
-    libzmq3-dev graphviz
-ARG TORCH_DISTRO_COMMIT=a86a09071344bcbe6c60a868ebde6a3b264e9efb
+ARG TORCH_DISTRO_COMMIT=c0e51b98acbb54e6655343a57152b6e711ffdc2b
 RUN git clone https://github.com/torch/distro.git ~/torch --recursive \
  && cd ~/torch \
  && git checkout "$TORCH_DISTRO_COMMIT" \
@@ -56,9 +56,13 @@ RUN luarocks install luaxpath
 # Install CSV parser
 RUN luarocks install csv
 
-# Install torch-autograd, rnn and unsup
+# Install automatic differentiation library
 RUN luarocks install autograd
+
+# Install recurrent neural network modules
 RUN luarocks install rnn
+
+# Install unsupervised learning modules (includes PCA)
 RUN luarocks install unsup
 
 # Install HTTP client
@@ -80,9 +84,8 @@ RUN luarocks install dataload
 RUN apt-get update && apt-get install -y graphicsmagick libgraphicsmagick1-dev
 RUN luarocks install graphicsmagick
 
+# Install neural network analysis library
 RUN luarocks install optnet
-
-RUN apt-get update && apt-get install -y wget
 
 # Install FFmpeg and Lua bindings
 RUN echo "deb http://ppa.launchpad.net/kirillshkrogalev/ffmpeg-next/ubuntu trusty main" \
@@ -103,7 +106,7 @@ RUN git clone https://github.com/anibali/torchvid.git /tmp/torchvid \
  && luarocks make rockspecs/torchvid-scm-0.rockspec \
  && rm -rf /tmp/torchvid
 
-# OpenCV
+# Install OpenCV and Lua bindings
 RUN cd /tmp \
  && wget https://github.com/Itseez/opencv/archive/3.1.0.zip \
  && unzip 3.1.0.zip \
@@ -115,9 +118,15 @@ RUN cd /tmp \
  && make install
 RUN luarocks install cv
 
-RUN luarocks install lua-zlib
-
+# Install weight initialisation helper
 RUN luarocks install nninit
+
+# Install Lua web server
+RUN luarocks install lzlib ZLIB_LIBDIR=/lib/x86_64-linux-gnu
+RUN luarocks install pegasus
+
+# Install Base64 library
+RUN luarocks install lbase64
 
 # Clean up
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
