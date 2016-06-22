@@ -128,6 +128,9 @@ RUN luarocks install pegasus
 # Install Base64 library
 RUN luarocks install lbase64
 
+# Install remote debugger for Lua
+RUN luarocks install https://gist.githubusercontent.com/anibali/d8a54118680ec0c300680aa12cb25e9d/raw/34917d844a19a44f58c720f5e2563e7baef23029/mobdebug-scm-1.rockspec \
+
 # Clean up
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
