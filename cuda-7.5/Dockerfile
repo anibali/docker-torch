@@ -21,7 +21,7 @@ RUN easy_install3 pip \
  && pip install 'notebook==4.2.1' jupyter
 
 # Install Torch
-ARG TORCH_DISTRO_COMMIT=c0e51b98acbb54e6655343a57152b6e711ffdc2b
+ARG TORCH_DISTRO_COMMIT=bfc5d1ff172842262a090d858b38c6bc4af7088d
 RUN git clone https://github.com/torch/distro.git ~/torch --recursive \
  && cd ~/torch \
  && git checkout "$TORCH_DISTRO_COMMIT" \
@@ -129,7 +129,11 @@ RUN luarocks install pegasus
 RUN luarocks install lbase64
 
 # Install remote debugger for Lua
-RUN luarocks install https://gist.githubusercontent.com/anibali/d8a54118680ec0c300680aa12cb25e9d/raw/34917d844a19a44f58c720f5e2563e7baef23029/mobdebug-scm-1.rockspec \
+RUN luarocks install https://gist.githubusercontent.com/anibali/d8a54118680ec0c300680aa12cb25e9d/raw/34917d844a19a44f58c720f5e2563e7baef23029/mobdebug-scm-1.rockspec
+
+# Install Torchnet framework
+RUN luarocks install tds
+RUN luarocks install torchnet
 
 # Clean up
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
