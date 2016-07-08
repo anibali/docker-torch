@@ -21,7 +21,7 @@ RUN easy_install3 pip \
  && pip install 'notebook==4.2.1' jupyter
 
 # Install Torch
-ARG TORCH_DISTRO_COMMIT=bfc5d1ff172842262a090d858b38c6bc4af7088d
+ARG TORCH_DISTRO_COMMIT=f95379d8512ab96939b0d797c489bbaedf7fa313
 RUN git clone https://github.com/torch/distro.git ~/torch --recursive \
  && cd ~/torch \
  && git checkout "$TORCH_DISTRO_COMMIT" \
@@ -99,7 +99,7 @@ RUN apt-get update \
     libavfilter-ffmpeg-dev \
     ffmpeg \
     pkg-config
-ARG TORCHVID_COMMIT=f7bbef011a468e6c3cb4746bc4bf067373afffb6
+ARG TORCHVID_COMMIT=13aab491eaedda1eee0a46ef586596cfe9a09ce5
 RUN git clone https://github.com/anibali/torchvid.git /tmp/torchvid \
  && cd /tmp/torchvid \
  && git checkout "$TORCHVID_COMMIT" \
@@ -132,7 +132,6 @@ RUN luarocks install lbase64
 RUN luarocks install https://gist.githubusercontent.com/anibali/d8a54118680ec0c300680aa12cb25e9d/raw/34917d844a19a44f58c720f5e2563e7baef23029/mobdebug-scm-1.rockspec
 
 # Install Torchnet framework
-RUN luarocks install tds
 RUN luarocks install torchnet
 
 # Clean up
