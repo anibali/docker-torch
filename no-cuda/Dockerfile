@@ -87,24 +87,8 @@ RUN luarocks install graphicsmagick
 # Install neural network analysis library
 RUN luarocks install optnet
 
-# Install FFmpeg and Lua bindings
-RUN echo "deb http://ppa.launchpad.net/kirillshkrogalev/ffmpeg-next/ubuntu trusty main" \
-    > /etc/apt/sources.list.d/ffmpeg.list \
- && apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 8EFE5982
-RUN apt-get update \
- && apt-get install -y \
-    libavformat-ffmpeg-dev \
-    libavcodec-ffmpeg-dev \
-    libavutil-ffmpeg-dev \
-    libavfilter-ffmpeg-dev \
-    ffmpeg \
-    pkg-config
-ARG TORCHVID_COMMIT=13aab491eaedda1eee0a46ef586596cfe9a09ce5
-RUN git clone https://github.com/anibali/torchvid.git /tmp/torchvid \
- && cd /tmp/torchvid \
- && git checkout "$TORCHVID_COMMIT" \
- && luarocks make rockspecs/torchvid-scm-0.rockspec \
- && rm -rf /tmp/torchvid
+# Install GTK libraries
+RUN apt-get update && apt-get install -y libgtk2.0-dev
 
 # Install OpenCV and Lua bindings
 RUN cd /tmp \
@@ -117,6 +101,25 @@ RUN cd /tmp \
  && make -j $(getconf _NPROCESSORS_ONLN) \
  && make install
 RUN luarocks install cv
+
+# Install FFmpeg and Lua bindings
+RUN echo "deb http://ppa.launchpad.net/kirillshkrogalev/ffmpeg-next/ubuntu trusty main" \
+    > /etc/apt/sources.list.d/ffmpeg.list \
+ && apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 8EFE5982
+RUN apt-get update \
+ && apt-get install -y \
+    libavformat-ffmpeg-dev \
+    libavcodec-ffmpeg-dev \
+    libavutil-ffmpeg-dev \
+    libavfilter-ffmpeg-dev \
+    ffmpeg \
+    pkg-config
+ARG TORCHVID_COMMIT=bba69501c56bd0718d0e977aa24e702b5a44db71
+RUN git clone https://github.com/anibali/torchvid.git /tmp/torchvid \
+ && cd /tmp/torchvid \
+ && git checkout "$TORCHVID_COMMIT" \
+ && luarocks make rockspecs/torchvid-scm-0.rockspec \
+ && rm -rf /tmp/torchvid
 
 # Install weight initialisation helper
 RUN luarocks install nninit
