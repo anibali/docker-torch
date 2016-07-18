@@ -89,6 +89,33 @@ container is `/root/notebook`. By creating a volume which maps the current
 working directory to that location in the image, `th` is able to find and
 run our script.
 
+##### Running graphical applications
+
+If you are running on a Linux host, you can get code running inside the Docker
+container to display graphics using the host X server (this allows you to use
+OpenCV's imshow, for example). Here we describe a quick-and-dirty (but INSECURE)
+way of doing this. For a more comprehensive guide on GUIs and Docker check out
+http://wiki.ros.org/docker/Tutorials/GUI.
+
+On the host run:
+
+```sh
+sudo xhost +local:root
+```
+
+You can revoke these access permissions later with `sudo xhost -local:root`.
+Now when you run a container make sure you add the options `-e "DISPLAY"` and
+`--volume="/tmp/.X11-unix:/tmp/.X11-unix:rw"`. This will provide the container
+with your X11 socket for communication and your display ID. Here's an
+example:
+
+```sh
+NV_GPU=0 nvidia-docker run --rm -it \
+  -e "DISPLAY" --volume="/tmp/.X11-unix:/tmp/.X11-unix:rw" \
+  --volume="$PWD:/root/notebook" torch \
+  th -e 'cv = require"cv";require"cv.highgui";cv.namedWindow{"Foo"};cv.waitKey{0}'
+```
+
 #### Custom iTorch notebook configuration
 
 You can create a `notebook.json` config file to customise the editor. Some of the
