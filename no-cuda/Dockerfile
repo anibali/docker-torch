@@ -88,7 +88,7 @@ RUN luarocks install graphicsmagick
 RUN luarocks install optnet
 
 # Install GTK libraries
-RUN apt-get update && apt-get install -y libgtk2.0-dev
+RUN apt-get update && apt-get install -y libgtk2.0-dev libcanberra-gtk-module
 
 # Install OpenCV and Lua bindings
 RUN cd /tmp \
@@ -136,6 +136,9 @@ RUN luarocks install https://gist.githubusercontent.com/anibali/d8a54118680ec0c3
 
 # Install Torchnet framework
 RUN luarocks install torchnet
+
+# Install Spatial Transformer Network library
+RUN luarocks install https://raw.githubusercontent.com/qassemoquab/stnbhwd/master/stnbhwd-scm-1.rockspec
 
 # Clean up
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
