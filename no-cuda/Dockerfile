@@ -21,7 +21,7 @@ RUN easy_install3 pip \
  && pip install 'notebook==4.2.1' jupyter
 
 # Install Torch
-ARG TORCH_DISTRO_COMMIT=f95379d8512ab96939b0d797c489bbaedf7fa313
+ARG TORCH_DISTRO_COMMIT=f41316ea2895fd3462375c7c92350c646b25166b
 RUN git clone https://github.com/torch/distro.git ~/torch --recursive \
  && cd ~/torch \
  && git checkout "$TORCH_DISTRO_COMMIT" \
@@ -121,9 +121,6 @@ RUN git clone https://github.com/anibali/torchvid.git /tmp/torchvid \
  && luarocks make rockspecs/torchvid-scm-0.rockspec \
  && rm -rf /tmp/torchvid
 
-# Install weight initialisation helper
-RUN luarocks install nninit
-
 # Install Lua web server
 RUN luarocks install lzlib ZLIB_LIBDIR=/lib/x86_64-linux-gnu
 RUN luarocks install pegasus
@@ -134,17 +131,30 @@ RUN luarocks install lbase64
 # Install remote debugger for Lua
 RUN luarocks install https://gist.githubusercontent.com/anibali/d8a54118680ec0c300680aa12cb25e9d/raw/34917d844a19a44f58c720f5e2563e7baef23029/mobdebug-scm-1.rockspec
 
+# Install weight initialisation helper
+RUN luarocks install nninit
+
 # Install Torchnet framework
 RUN luarocks install torchnet
 
 # Install Spatial Transformer Network library
 RUN luarocks install https://raw.githubusercontent.com/qassemoquab/stnbhwd/master/stnbhwd-scm-1.rockspec
 
+# Install Stitch for executing and rendering markdown files with code in them
+RUN pip install typing \
+ && apt-get install -y pandoc \
+ && cd /tmp \
+ && git clone https://github.com/pystitch/stitch.git \
+ && cd stitch \
+ && python3 setup.py install \
+ && rm -rf /tmp/stitch
+ENV LC_ALL=C.UTF-8
+
 # Clean up
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # Set working dir
-VOLUME /root/notebook
+RUN mkdir /root/notebook
 WORKDIR /root/notebook
 
 # Jupyter config
@@ -155,5 +165,7 @@ COPY notebook.json /root/.jupyter/nbconfig/
 
 # Expose Jupyter port
 EXPOSE 8888
+
+
 
 CMD ["jupyter", "notebook", "--no-browser", "--ip=0.0.0.0"]
