@@ -141,9 +141,10 @@ RUN luarocks install torchnet
 RUN luarocks install https://raw.githubusercontent.com/qassemoquab/stnbhwd/master/stnbhwd-scm-1.rockspec
 
 # Install Stitch for executing and rendering markdown files with code in them
-RUN pip install typing \
- && apt-get install -y pandoc \
- && cd /tmp \
+RUN cd /tmp \
+ && pip install typing \
+ && wget https://github.com/jgm/pandoc/releases/download/1.17.2/pandoc-1.17.2-1-amd64.deb \
+ && dpkg -i pandoc-1.17.2-1-amd64.deb \
  && git clone https://github.com/pystitch/stitch.git \
  && cd stitch \
  && python3 setup.py install \
