@@ -1,5 +1,10 @@
 FROM nvidia/cuda:7.5-cudnn5-devel
 
+# Use Tini as the init process with PID 1
+ADD https://github.com/krallin/tini/releases/download/v0.10.0/tini /tini
+RUN chmod +x /tini
+ENTRYPOINT ["/tini", "--"]
+
 # Install dependencies for OpenBLAS, Jupyter, and Torch
 RUN apt-get update \
  && apt-get install -y \
@@ -21,7 +26,7 @@ RUN easy_install3 pip \
  && pip install 'notebook==4.2.1' jupyter
 
 # Install Torch
-ARG TORCH_DISTRO_COMMIT=ed547376d552346afc69a937c6b36cf9ea9d1135
+ARG TORCH_DISTRO_COMMIT=a86fdb060509234288c8b2c5eae2d3d66b51901a
 RUN git clone https://github.com/torch/distro.git ~/torch --recursive \
  && cd ~/torch \
  && git checkout "$TORCH_DISTRO_COMMIT" \

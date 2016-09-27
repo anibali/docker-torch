@@ -1,5 +1,10 @@
 FROM $BASE
 
+# Use Tini as the init process with PID 1
+ADD https://github.com/krallin/tini/releases/download/v0.10.0/tini /tini
+RUN chmod +x /tini
+ENTRYPOINT ["/tini", "--"]
+
 # Install dependencies for OpenBLAS, Jupyter, and Torch
 RUN apt-get update \
  && apt-get install -y \
