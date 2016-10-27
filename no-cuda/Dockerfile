@@ -26,7 +26,7 @@ RUN easy_install3 pip \
  && pip install 'notebook==4.2.1' jupyter
 
 # Install Torch
-ARG TORCH_DISTRO_COMMIT=a86fdb060509234288c8b2c5eae2d3d66b51901a
+ARG TORCH_DISTRO_COMMIT=cb3ad52ed940f4ffda090d1ada503f7d765484fc
 RUN git clone https://github.com/torch/distro.git ~/torch --recursive \
  && cd ~/torch \
  && git checkout "$TORCH_DISTRO_COMMIT" \
@@ -69,6 +69,9 @@ RUN luarocks install rnn
 
 # Install unsupervised learning modules (includes PCA)
 RUN luarocks install unsup
+
+# Install fast t-SNE module
+RUN luarocks install https://raw.githubusercontent.com/DmitryUlyanov/Multicore-TSNE/master/torch/tsne-1.0-0.rockspec
 
 # Install HTTP client
 RUN luarocks install httpclient

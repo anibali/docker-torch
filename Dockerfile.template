@@ -70,6 +70,9 @@ RUN luarocks install rnn
 # Install unsupervised learning modules (includes PCA)
 RUN luarocks install unsup
 
+# Install fast t-SNE module
+RUN luarocks install https://raw.githubusercontent.com/DmitryUlyanov/Multicore-TSNE/master/torch/tsne-1.0-0.rockspec
+
 # Install HTTP client
 RUN luarocks install httpclient
 
