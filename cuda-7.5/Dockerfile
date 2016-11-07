@@ -26,7 +26,7 @@ RUN easy_install3 pip \
  && pip install 'notebook==4.2.1' jupyter
 
 # Install Torch
-ARG TORCH_DISTRO_COMMIT=cb3ad52ed940f4ffda090d1ada503f7d765484fc
+ARG TORCH_DISTRO_COMMIT=831d273a572abbbf02904b6299a5f9a7bc2c3902
 RUN git clone https://github.com/torch/distro.git ~/torch --recursive \
  && cd ~/torch \
  && git checkout "$TORCH_DISTRO_COMMIT" \
@@ -161,6 +161,14 @@ RUN cd /tmp \
  && python3 setup.py install \
  && rm -rf /tmp/stitch
 ENV LC_ALL=C.UTF-8
+
+# Install Caffe model loader
+RUN apt-get update \
+ && apt-get install -y libprotobuf-dev protobuf-compiler
+RUN luarocks install loadcaffe
+
+# Layer-wise learning rate module
+RUN luarocks install nnlr
 
 # Clean up
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*

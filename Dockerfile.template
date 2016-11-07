@@ -162,6 +162,14 @@ RUN cd /tmp \
  && rm -rf /tmp/stitch
 ENV LC_ALL=C.UTF-8
 
+# Install Caffe model loader
+RUN apt-get update \
+ && apt-get install -y libprotobuf-dev protobuf-compiler
+RUN luarocks install loadcaffe
+
+# Layer-wise learning rate module
+RUN luarocks install nnlr
+
 # Clean up
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
