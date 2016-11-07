@@ -26,7 +26,7 @@ RUN easy_install3 pip \
  && pip install 'notebook==4.2.1' jupyter
 
 # Install Torch
-ARG TORCH_DISTRO_COMMIT=$LATEST_TORCH_DISTRO_COMMIT
+ARG TORCH_DISTRO_COMMIT=$DEFAULT_TORCH_DISTRO_COMMIT
 RUN git clone https://github.com/torch/distro.git ~/torch --recursive \
  && cd ~/torch \
  && git checkout "$TORCH_DISTRO_COMMIT" \
@@ -42,7 +42,7 @@ ENV LUA_PATH='/root/.luarocks/share/lua/5.1/?.lua;/root/.luarocks/share/lua/5.1/
 # Install HDF5 and Lua bindings
 RUN apt-get update \
  && apt-get install -y libhdf5-dev hdf5-tools
-ARG TORCH_HDF5_COMMIT=$LATEST_TORCH_HDF5_COMMIT
+ARG TORCH_HDF5_COMMIT=$DEFAULT_TORCH_HDF5_COMMIT
 RUN git clone https://github.com/deepmind/torch-hdf5.git /tmp/torch-hdf5 \
  && cd /tmp/torch-hdf5 \
  && git checkout "$TORCH_HDF5_COMMIT" \
@@ -125,7 +125,7 @@ RUN apt-get update \
     libavfilter-ffmpeg-dev \
     ffmpeg \
     pkg-config
-ARG TORCHVID_COMMIT=$LATEST_TORCHVID_COMMIT
+ARG TORCHVID_COMMIT=$DEFAULT_TORCHVID_COMMIT
 RUN git clone https://github.com/anibali/torchvid.git /tmp/torchvid \
  && cd /tmp/torchvid \
  && git checkout "$TORCHVID_COMMIT" \
