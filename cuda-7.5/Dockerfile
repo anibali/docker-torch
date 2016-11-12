@@ -168,6 +168,11 @@ RUN apt-get update \
  && apt-get install -y libprotobuf-dev protobuf-compiler
 RUN luarocks install loadcaffe
 
+# Install module for loading Matlab data files
+RUN apt-get update \
+ && apt-get install -y libmatio2 \
+ && luarocks install matio
+
 # Layer-wise learning rate module
 RUN luarocks install nnlr
 
