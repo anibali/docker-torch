@@ -26,7 +26,7 @@ RUN easy_install3 pip \
  && pip install 'notebook==4.2.1' jupyter
 
 # Install Torch
-ARG TORCH_DISTRO_COMMIT=831d273a572abbbf02904b6299a5f9a7bc2c3902
+ARG TORCH_DISTRO_COMMIT=a867e04e8c224959c19e0d9f2fbc40285a1fb75b
 RUN git clone https://github.com/torch/distro.git ~/torch --recursive \
  && cd ~/torch \
  && git checkout "$TORCH_DISTRO_COMMIT" \
@@ -40,13 +40,23 @@ ENV LUA_PATH='/root/.luarocks/share/lua/5.1/?.lua;/root/.luarocks/share/lua/5.1/
     DYLD_LIBRARY_PATH=/root/torch/install/lib:$DYLD_LIBRARY_PATH
 
 # Install HDF5 and Lua bindings
-RUN apt-get update \
- && apt-get install -y libhdf5-dev hdf5-tools
-ARG TORCH_HDF5_COMMIT=639bb4e62417ac392bf31a53cdd495d19337642b
-RUN git clone https://github.com/deepmind/torch-hdf5.git /tmp/torch-hdf5 \
+# RUN apt-get update \
+#  && apt-get install -y libhdf5-dev hdf5-tools
+RUN mkdir -p /tmp/hdf5 \
+ && cd /tmp/hdf5 \
+ && wget -q https://support.hdfgroup.org/ftp/HDF5/releases/hdf5-1.10/hdf5-1.10.0-patch1/src/hdf5-1.10.0-patch1.tar.gz \
+ && tar xzf hdf5-1.10.0-patch1.tar.gz \
+ && cd hdf5-1.10.0-patch1 \
+ && ./configure --prefix=/usr/local --with-default-api-version=v18 \
+ && make \
+ && make install \
+ && rm -rf /tmp/hdf5
+
+ARG TORCH_HDF5_COMMIT=a4f80cbc1d6f53cda3b890fd96a846046a6b0424
+RUN git clone https://github.com/anibali/torch-hdf5.git /tmp/torch-hdf5 \
  && cd /tmp/torch-hdf5 \
- && git checkout "$TORCH_HDF5_COMMIT" \
- && luarocks make hdf5-0-0.rockspec LIBHDF5_LIBDIR="/usr/lib/x86_64-linux-gnu/" \
+ && git checkout hdfs-1.10 \
+ && luarocks make hdf5-0-0.rockspec \
  && rm -rf /tmp/torch-hdf5
 
 # Install Moses for utilities
@@ -100,7 +110,7 @@ RUN apt-get update && apt-get install -y libgtk2.0-dev libcanberra-gtk-module
 
 # Install OpenCV and Lua bindings
 RUN cd /tmp \
- && wget https://github.com/Itseez/opencv/archive/3.1.0.zip \
+ && wget -q https://github.com/Itseez/opencv/archive/3.1.0.zip \
  && unzip 3.1.0.zip \
  && mkdir opencv-3.1.0/build \
  && cd opencv-3.1.0/build \
@@ -175,6 +185,9 @@ RUN apt-get update \
 
 # Layer-wise learning rate module
 RUN luarocks install nnlr
+
+# Install randomkit bindings
+RUN luarocks install randomkit
 
 # Clean up
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
