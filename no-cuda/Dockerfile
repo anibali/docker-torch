@@ -186,8 +186,8 @@ RUN apt-get update \
 # Layer-wise learning rate module
 RUN luarocks install nnlr
 
-# Install randomkit bindings
-RUN luarocks install randomkit
+# Install distributions bindings
+RUN luarocks install https://raw.github.com/deepmind/torch-distributions/master/distributions-0-0.rockspec
 
 # Clean up
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
