@@ -55,7 +55,7 @@ RUN mkdir -p /tmp/hdf5 \
 ARG TORCH_HDF5_COMMIT=a4f80cbc1d6f53cda3b890fd96a846046a6b0424
 RUN git clone https://github.com/anibali/torch-hdf5.git /tmp/torch-hdf5 \
  && cd /tmp/torch-hdf5 \
- && git checkout hdfs-1.10 \
+ && git checkout hdf5-1.10 \
  && luarocks make hdf5-0-0.rockspec \
  && rm -rf /tmp/torch-hdf5
 
