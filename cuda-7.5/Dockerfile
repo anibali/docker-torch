@@ -39,6 +39,44 @@ ENV LUA_PATH='/root/.luarocks/share/lua/5.1/?.lua;/root/.luarocks/share/lua/5.1/
     LD_LIBRARY_PATH=/root/torch/install/lib:$LD_LIBRARY_PATH \
     DYLD_LIBRARY_PATH=/root/torch/install/lib:$DYLD_LIBRARY_PATH
 
+# Install GTK libraries
+RUN apt-get update \
+ && apt-get install -y libgtk2.0-dev libcanberra-gtk-module
+
+# Install OpenCV and Lua bindings
+RUN cd /tmp \
+ && wget -q https://github.com/Itseez/opencv/archive/3.1.0.zip \
+ && unzip 3.1.0.zip \
+ && mkdir opencv-3.1.0/build \
+ && cd opencv-3.1.0/build \
+ && cmake -D WITH_CUDA=off -D WITH_OPENCL=off -D BUILD_SHARED_LIBS=off \
+      -D CMAKE_CXX_FLAGS=-fPIC -D WITH_QT=off -D WITH_VTK=off -D WITH_GTK=on \
+      -D WITH_OPENGL=off -D CMAKE_BUILD_TYPE=RELEASE \
+      -D CMAKE_INSTALL_PREFIX=/usr/local .. \
+ && make -j $(getconf _NPROCESSORS_ONLN) \
+ && make install \
+ && rm -rf /tmp/3.1.0.zip /tmp/opencv-3.1.0
+RUN luarocks install cv
+
+# Install FFmpeg and Lua bindings
+RUN echo "deb http://ppa.launchpad.net/kirillshkrogalev/ffmpeg-next/ubuntu trusty main" \
+    > /etc/apt/sources.list.d/ffmpeg.list \
+ && apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 8EFE5982
+RUN apt-get update \
+ && apt-get install -y \
+    libavformat-ffmpeg-dev \
+    libavcodec-ffmpeg-dev \
+    libavutil-ffmpeg-dev \
+    libavfilter-ffmpeg-dev \
+    ffmpeg \
+    pkg-config
+ARG TORCHVID_COMMIT=bba69501c56bd0718d0e977aa24e702b5a44db71
+RUN git clone https://github.com/anibali/torchvid.git /tmp/torchvid \
+ && cd /tmp/torchvid \
+ && git checkout "$TORCHVID_COMMIT" \
+ && luarocks make rockspecs/torchvid-scm-0.rockspec \
+ && rm -rf /tmp/torchvid
+
 # Install HDF5 and Lua bindings
 # RUN apt-get update \
 #  && apt-get install -y libhdf5-dev hdf5-tools
@@ -52,10 +90,10 @@ RUN mkdir -p /tmp/hdf5 \
  && make install \
  && rm -rf /tmp/hdf5
 
-ARG TORCH_HDF5_COMMIT=a4f80cbc1d6f53cda3b890fd96a846046a6b0424
+ARG TORCH_HDF5_COMMIT=dd6b2cd6f56b17403bf46174cc84186cb6416c14
 RUN git clone https://github.com/anibali/torch-hdf5.git /tmp/torch-hdf5 \
  && cd /tmp/torch-hdf5 \
- && git checkout hdf5-1.10 \
+ && git checkout "$TORCH_HDF5_COMMIT" \
  && luarocks make hdf5-0-0.rockspec \
  && rm -rf /tmp/torch-hdf5
 
@@ -104,43 +142,6 @@ RUN luarocks install graphicsmagick
 
 # Install neural network analysis library
 RUN luarocks install optnet
-
-# Install GTK libraries
-RUN apt-get update && apt-get install -y libgtk2.0-dev libcanberra-gtk-module
-
-# Install OpenCV and Lua bindings
-RUN cd /tmp \
- && wget -q https://github.com/Itseez/opencv/archive/3.1.0.zip \
- && unzip 3.1.0.zip \
- && mkdir opencv-3.1.0/build \
- && cd opencv-3.1.0/build \
- && cmake -D WITH_CUDA=off -D WITH_OPENCL=off -D BUILD_SHARED_LIBS=off \
-      -D CMAKE_CXX_FLAGS=-fPIC -D WITH_QT=off -D WITH_VTK=off -D WITH_GTK=on \
-      -D WITH_OPENGL=off -D CMAKE_BUILD_TYPE=RELEASE \
-      -D CMAKE_INSTALL_PREFIX=/usr/local .. \
- && make -j $(getconf _NPROCESSORS_ONLN) \
- && make install \
- && rm -rf /tmp/3.1.0.zip /tmp/opencv-3.1.0
-RUN luarocks install cv
-
-# Install FFmpeg and Lua bindings
-RUN echo "deb http://ppa.launchpad.net/kirillshkrogalev/ffmpeg-next/ubuntu trusty main" \
-    > /etc/apt/sources.list.d/ffmpeg.list \
- && apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 8EFE5982
-RUN apt-get update \
- && apt-get install -y \
-    libavformat-ffmpeg-dev \
-    libavcodec-ffmpeg-dev \
-    libavutil-ffmpeg-dev \
-    libavfilter-ffmpeg-dev \
-    ffmpeg \
-    pkg-config
-ARG TORCHVID_COMMIT=bba69501c56bd0718d0e977aa24e702b5a44db71
-RUN git clone https://github.com/anibali/torchvid.git /tmp/torchvid \
- && cd /tmp/torchvid \
- && git checkout "$TORCHVID_COMMIT" \
- && luarocks make rockspecs/torchvid-scm-0.rockspec \
- && rm -rf /tmp/torchvid
 
 # Install Lua web server
 RUN luarocks install lzlib ZLIB_LIBDIR=/lib/x86_64-linux-gnu
