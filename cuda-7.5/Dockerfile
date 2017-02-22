@@ -190,6 +190,11 @@ RUN luarocks install nnlr
 # Install distributions bindings
 RUN luarocks install https://raw.github.com/deepmind/torch-distributions/master/distributions-0-0.rockspec
 
+# Install manifold
+RUN apt-get update \
+ && apt-get install -y libatlas3-base \
+ && luarocks install manifold
+
 # Clean up
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
