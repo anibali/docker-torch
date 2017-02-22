@@ -37,11 +37,24 @@ export DEFAULT_TORCH_HDF5_COMMIT
 template="Dockerfile.template"
 shell_format='$BASE:$DEFAULT_TORCH_DISTRO_COMMIT:$DEFAULT_TORCHVID_COMMIT:$DEFAULT_TORCH_HDF5_COMMIT:$CUDA_ONLY_STEPS'
 
-# CUDA-enabled
+# CUDA 7.5
 
 dest="cuda-7.5/Dockerfile"
 mkdir -p "$(dirname "$dest")"
 export BASE=nvidia/cuda:7.5-cudnn5-devel
+
+export CUDA_ONLY_STEPS='
+# Install CuDNN with Torch bindings
+RUN luarocks install https://raw.githubusercontent.com/soumith/cudnn.torch/R5/cudnn-scm-1.rockspec
+'
+
+envsubst $shell_format < $template > $dest
+
+# CUDA 8.0
+
+dest="cuda-8.0/Dockerfile"
+mkdir -p "$(dirname "$dest")"
+export BASE=nvidia/cuda:8.0-cudnn5-devel
 
 export CUDA_ONLY_STEPS='
 # Install CuDNN with Torch bindings
