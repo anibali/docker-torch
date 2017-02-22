@@ -49,6 +49,7 @@ RUN luarocks install https://raw.githubusercontent.com/soumith/cudnn.torch/R5/cu
 '
 
 envsubst $shell_format < $template > $dest
+cp common/* "$(dirname "$dest")"
 
 # CUDA 8.0
 
@@ -62,6 +63,7 @@ RUN luarocks install https://raw.githubusercontent.com/soumith/cudnn.torch/R5/cu
 '
 
 envsubst $shell_format < $template > $dest
+cp common/* "$(dirname "$dest")"
 
 # No CUDA
 
@@ -69,4 +71,6 @@ dest="no-cuda/Dockerfile"
 mkdir -p "$(dirname "$dest")"
 export BASE=ubuntu:14.04
 export CUDA_ONLY_STEPS=''
+
 envsubst $shell_format < $template > $dest
+cp common/* "$(dirname "$dest")"
