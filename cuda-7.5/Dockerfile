@@ -124,6 +124,10 @@ RUN luarocks install https://raw.githubusercontent.com/DmitryUlyanov/Multicore-T
 # Install HTTP client
 RUN luarocks install httpclient
 
+
+ENV LIBRARY_PATH=/usr/local/cuda/lib64/stubs \
+	DYLD_LIBRARY_PATH=/root/torch/install/lib:/root/torch/install/lib:/root/torch/install/lib
+
 # Install Lua POSIX bindings
 RUN unset LIBRARY_PATH && luarocks install luaposix
 
