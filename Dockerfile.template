@@ -59,15 +59,12 @@ RUN cd /tmp \
 RUN luarocks install cv
 
 # Install FFmpeg and Lua bindings
-RUN echo "deb http://ppa.launchpad.net/kirillshkrogalev/ffmpeg-next/ubuntu trusty main" \
-    > /etc/apt/sources.list.d/ffmpeg.list \
- && apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 8EFE5982
 RUN apt-get update \
  && apt-get install -y \
-    libavformat-ffmpeg-dev \
-    libavcodec-ffmpeg-dev \
-    libavutil-ffmpeg-dev \
-    libavfilter-ffmpeg-dev \
+    libavformat-dev \
+    libavcodec-dev \
+    libavutil-dev \
+    libavfilter-dev \
     ffmpeg \
     pkg-config
 ARG TORCHVID_COMMIT=$DEFAULT_TORCHVID_COMMIT

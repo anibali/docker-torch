@@ -26,7 +26,7 @@ RUN easy_install3 pip \
  && pip install 'notebook==4.2.1' jupyter
 
 # Install Torch
-ARG TORCH_DISTRO_COMMIT=a867e04e8c224959c19e0d9f2fbc40285a1fb75b
+ARG TORCH_DISTRO_COMMIT=9c2ef7f185c682ea333e06654cb6e5b67dfe7cd2
 RUN git clone https://github.com/torch/distro.git ~/torch --recursive \
  && cd ~/torch \
  && git checkout "$TORCH_DISTRO_COMMIT" \
@@ -59,18 +59,15 @@ RUN cd /tmp \
 RUN luarocks install cv
 
 # Install FFmpeg and Lua bindings
-RUN echo "deb http://ppa.launchpad.net/kirillshkrogalev/ffmpeg-next/ubuntu trusty main" \
-    > /etc/apt/sources.list.d/ffmpeg.list \
- && apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 8EFE5982
 RUN apt-get update \
  && apt-get install -y \
-    libavformat-ffmpeg-dev \
-    libavcodec-ffmpeg-dev \
-    libavutil-ffmpeg-dev \
-    libavfilter-ffmpeg-dev \
+    libavformat-dev \
+    libavcodec-dev \
+    libavutil-dev \
+    libavfilter-dev \
     ffmpeg \
     pkg-config
-ARG TORCHVID_COMMIT=bba69501c56bd0718d0e977aa24e702b5a44db71
+ARG TORCHVID_COMMIT=8dd49d6bc9279278fe438cf8a6d7bcfe0c58a7ab
 RUN git clone https://github.com/anibali/torchvid.git /tmp/torchvid \
  && cd /tmp/torchvid \
  && git checkout "$TORCHVID_COMMIT" \
